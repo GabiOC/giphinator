@@ -1,1 +1,1 @@
-require_relative './key.rb'
+require_relative '../key.rb'
