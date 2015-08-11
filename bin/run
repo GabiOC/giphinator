@@ -1,19 +1,23 @@
 #!/usr/bin/env ruby
 require_relative '../config/environment'
-require 'pry'
 
-gif = Giphy::Client.new
+# runner
 
-data = gif.search("computer", {rating: "r"})
+# @gif = Giphy::Client.new
 
-# binding.pry
+start_giphinator
 
-# puts data["images"]["original"]["url"]
+# data = gif.search("computer", {rating: "r"})
 
-arr = []
+# # binding.pry
 
-data.each do |x|
-  arr << x["images"]["original"]["url"]
-end
+# ## FOR TRANSLATE
+# # puts data["images"]["original"]["url"]
 
-puts arr
+# arr = []
+
+# data.each do |x|
+#   arr << x["images"]["original"]["url"]
+# end
+
+# puts arr
