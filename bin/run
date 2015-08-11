@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+require_relative '../config/environment'
+require 'pry'
+
+gif = Giphy::Client.new
+
+data = gif.search("computer", {rating: "r"})
+
+# binding.pry
+
+# puts data["images"]["original"]["url"]
+
+arr = []
+
+data.each do |x|
+  arr << x["images"]["original"]["url"]
+end
+
+puts arr
