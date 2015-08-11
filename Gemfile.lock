@@ -25,6 +25,9 @@ PLATFORMS
 
 DEPENDENCIES
   giphy
+<<<<<<< HEAD
 
 BUNDLED WITH
    1.10.6
+=======
+>>>>>>> bc88e0f8ff165aba002164d385edb7f0a1e2afc0

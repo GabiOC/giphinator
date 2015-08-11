@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+require_relative '../config/environment'
+
+# runner
+
+# @gif = Giphy::Client.new
+
+start_giphinator
+
+# data = gif.search("computer", {rating: "r"})
+
+# # binding.pry
+
+# ## FOR TRANSLATE
+# # puts data["images"]["original"]["url"]
+
+# arr = []
+
+# data.each do |x|
+#   arr << x["images"]["original"]["url"]
+# end
+
+# puts arr
