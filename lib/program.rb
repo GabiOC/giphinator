@@ -1,5 +1,3 @@
-
-
 require 'pry'
 
 class Commands
@@ -10,13 +8,14 @@ class Commands
   end
 
   def start_giphinator
-    puts "Here are your options:
-    - search
-    - trending
-    - random
-    - translate
-    - custom
-    - exit"
+    puts "~THE GIPHINATOR~
+    Here are your options:
+      Search
+      Trending
+      Random
+      Translate
+      Custom
+      Exit"
     answer = gets.chomp.downcase
     handle_response(answer)
   end
@@ -42,6 +41,7 @@ class Commands
     end
   end
 
+  ## RESPONSE HANDLING METHODS
   def search
     puts "SEARCH
     Please enter search term"
@@ -51,7 +51,7 @@ class Commands
     url = get_url(data).sample
     puts "Here is the link:
     #{url}"
-    open_choice(url)
+    preview_or_browser(url)
   end
 
   def trending
@@ -75,7 +75,7 @@ class Commands
     url = data["image_original_url"]
     puts "Here is the link:
     #{url}"
-    open_choice(url)
+    preview_or_browser(url)
   end
 
   def translate
@@ -87,20 +87,21 @@ class Commands
     url = data["images"]["fixed_height"]["url"]
     puts "Here is the link:
     #{url}"
-    open_choice(url)
+    preview_or_browser(url)
   end
 
   def custom
     puts "CUSTOM
     Input your own gif url"
     answer = gets.chomp.downcase
-    open_choice(answer)
+    preview_or_browser(answer)
   end
 
   def exit
     abort("Thanks for gifing!")
   end
 
+  ## EXTRACT URL FROM GIF OBJECT
   def get_url(data)
     arr = []
     data.each do |x|
@@ -109,12 +110,33 @@ class Commands
     arr
   end
 
-  def open_url(url)
-    cmd = "open #{url}"
-    `#{cmd}`
+  ## HANDLE TRENDING VIEWING CHOICE
+  def open_trending(url)
+     puts "Do you want to open one? (yes/no)"
+    answer = gets.chomp.downcase
+    if answer == "yes"
+      trending_number_choice(url)
+    elsif answer == "no"
+      start_giphinator
+    else puts "Enter yes or no, dummy!"
+      open_trending(url)
+    end
   end
 
-  def open_choice(url)
+  ## SELECT WHICH TRENDING GIF TO VIEW
+  def trending_number_choice(url)
+      puts "Which one do you want to open? (type number)"
+      answer = gets.chomp.to_i
+      if answer > 0 && answer <= url.length
+        choice = url[answer-1]
+        preview_or_browser(choice)
+      else puts "Enter a valid number!"
+        trending_number_choice(url)
+      end
+  end
+
+  ## VIEWING CHOICE
+  def preview_or_browser(url)
     puts "Would you like to preview in terminal or open in browser? (preview/browser/no)"
     answer = gets.chomp.downcase
     if answer == "preview"
@@ -127,33 +149,17 @@ class Commands
       start_giphinator
     else
       puts "Enter yes or no dummy!"
-      open_choice(url)
+      preview_or_browser(url)
     end
   end
 
-  def open_trending(url)
-     puts "Do you want to open one? (yes/no)"
-    answer = gets.chomp.downcase
-    if answer == "yes"
-      trending_number_choice(url)
-    elsif answer == "no"
-      start_giphinator
-    else puts "Enter yes or no dummy!"
-      open_trending(url)
-    end
+  ## OPEN URL IN BROWSER
+  def open_url(url)
+    cmd = "open #{url}"
+    `#{cmd}`
   end
 
-  def trending_number_choice(url)
-      puts "Which one do you want to open? (type number)"
-      answer = gets.chomp.to_i
-      if answer > 0 && answer <= url.length
-        choice = url[answer-1]
-        open_choice(choice)
-      else puts "Enter a valid number!"
-        trending_number_choice(url)
-      end
-  end
-
+  ## WRITE GIF FRAMES TO IMAGES FOLDER
   def create_frames(url)
     @gifm = MiniMagick::Image.open(url)
     @gifm.frames.each_with_index do |frame, idx|
@@ -162,6 +168,7 @@ class Commands
     preview(url)
   end
 
+  ## PREVIEW GIF IN TERMINAL
   def preview(url)
     puts "...in color? (yes/no)"
     answer = gets.chomp.downcase
@@ -184,19 +191,21 @@ class Commands
     browser_choice(url)
   end
 
+  ## AFTER GIF PREVIEWED IN TERMINAL, DELETE GIF FRAME FILES
   def delete_frames
-    FileUtils.rm_rf(Dir.glob('images/*'))   #deletes image files
+    FileUtils.rm_rf(Dir.glob('images/*'))
   end
 
-   def browser_choice(url)
+  ## AFTER VIEWING IN TERMINAL, CHECK IF USER WANTS TO VIEW IN BROWSER
+  def browser_choice(url)
     puts "Do you want to open in browser? (yes/no)"
     answer = gets.chomp.downcase
-   if answer == "yes"
+    if answer == "yes"
       open_url(url)
       start_giphinator
     elsif answer == "no"
       start_giphinator
-   else puts "Enter yes or no dummy!"
+    else puts "Enter yes or no dummy!"
       browser_choice(url)
     end
   end
