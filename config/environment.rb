@@ -1,6 +1,10 @@
+
 require_relative '../key.rb'
-require 'giphy' 
+require 'giphy'
 require_relative '../lib/program'
+require 'mini_magick'
+require 'asciiart'
+require 'fileutils'
 
 class GiphyApi
   attr_reader :client

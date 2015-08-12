@@ -4,8 +4,8 @@ require_relative '../config/environment'
 # runner
 
 # @gif = Giphy::Client.new
-
-start_giphinator
+start = Commands.new
+start.start_giphinator
 
 # data = gif.search("computer", {rating: "r"})
 
