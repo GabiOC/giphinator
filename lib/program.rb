@@ -3,7 +3,7 @@
 require 'pry'
 
 class Commands
-  attr_accessor :gif
+  attr_accessor :gif, :gifm
 
   def initialize
     @gif = Giphy::Client.new
@@ -15,6 +15,7 @@ class Commands
     - trending
     - random
     - translate
+    - custom
     - exit"
     answer = gets.chomp.downcase
     handle_response(answer)
@@ -30,6 +31,8 @@ class Commands
       random
     when "translate"
       translate
+    when "custom"
+      custom
     when "exit"
       exit
     else
@@ -44,7 +47,7 @@ class Commands
     Please enter search term"
     answer = gets.chomp.downcase
     @gif
-    data = gif.search("#{answer}")
+    data = @gif.search("#{answer}")
     url = get_url(data).sample
     puts "Here is the link:
     #{url}"
@@ -78,13 +81,20 @@ class Commands
   def translate
     puts "TRANSLATE
     Please enter phrase"
-    answer = gets.chomp
+    answer = gets.chomp.downcase
     @gif
     data = gif.translate("#{answer}")
     url = data["images"]["fixed_height"]["url"]
     puts "Here is the link:
     #{url}"
     open_choice(url)
+  end
+
+  def custom
+    puts "CUSTOM
+    Input your own gif url"
+    answer = gets.chomp.downcase
+    open_choice(answer)
   end
 
   def exit
@@ -105,10 +115,11 @@ class Commands
   end
 
   def open_choice(url)
-    puts "Would you like to preview or open in browser? (preview/browser/no)"
+    puts "Would you like to preview in terminal or open in browser? (preview/browser/no)"
     answer = gets.chomp.downcase
     if answer == "preview"
-      preview(url)
+      puts "(may take a few seconds to load)"
+      create_frames(url)
     elsif answer == "browser"
       open_url(url)
       start_giphinator
@@ -124,11 +135,7 @@ class Commands
      puts "Do you want to open one? (yes/no)"
     answer = gets.chomp.downcase
     if answer == "yes"
-      puts "Which one do you want to open? (type number)"
-      answer = gets.chomp.to_i
-      choice = url[answer-1]
-      open_url(choice)
-      start_giphinator
+      trending_number_choice(url)
     elsif answer == "no"
       start_giphinator
     else puts "Enter yes or no dummy!"
@@ -136,24 +143,49 @@ class Commands
     end
   end
 
-  def preview(url)
-    @gif = MiniMagick::Image.open(url)
+  def trending_number_choice(url)
+      puts "Which one do you want to open? (type number)"
+      answer = gets.chomp.to_i
+      if answer > 0 && answer <= url.length
+        choice = url[answer-1]
+        open_choice(choice)
+      else puts "Enter a valid number!"
+        trending_number_choice(url)
+      end
+  end
 
-    @gif.frames.each_with_index do |frame, idx|
+  def create_frames(url)
+    @gifm = MiniMagick::Image.open(url)
+    @gifm.frames.each_with_index do |frame, idx|
       frame.write("images/frame#{idx}.jpg")
-    end       #creates frame files in images folder from url
+    end
+    preview(url)
+  end
 
-    num_frames = gif.frames.count
+  def preview(url)
+    puts "...in color? (yes/no)"
+    answer = gets.chomp.downcase
+    num_frames = @gifm.frames.count
     frames = num_frames.times.map {|f| "images/frame#{f}.jpg"}
-
-    frames.cycle.each do |frame|
+  if answer == "yes"
+    frames.cycle.first(num_frames * 2).each do |frame|
+    a = AsciiArt.new(frame)
+    puts a.to_ascii_art(color: true)
+    end
+  elsif answer == "no"
+    frames.cycle.first(num_frames * 2).each do |frame|
     a = AsciiArt.new(frame)
     puts a.to_ascii_art
-    #  (color: true)
-    #  exit false if gets.chomp.empty?
     end
-    FileUtils.rm_rf(Dir.glob('images/*'))   #deletes image files
+  else
+    preview(url)
+  end
+    delete_frames
     browser_choice(url)
+  end
+
+  def delete_frames
+    FileUtils.rm_rf(Dir.glob('images/*'))   #deletes image files
   end
 
    def browser_choice(url)
