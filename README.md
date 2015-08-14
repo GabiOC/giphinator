@@ -5,4 +5,4 @@ By [Emily Kowal](https://github.com/emottk/) and [Gabi O'Connor](https://github.
 This is a small app built to turn gifs from Giphy (as well as your own gifs) into ASCII art that runs in your terminal.
 Video demo [here](https://youtu.be/pZ4QysBQkUs).
 
-Thank you to [@stefania11](https://github.com/stefania11) for her idea to make gif frames loop in the terminal!
+Thank you to @stefania11, @stevennunez and @drewprice for their help and Stefania for her idea to loop gif frames in the terminal!
