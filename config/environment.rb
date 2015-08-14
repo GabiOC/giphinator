@@ -1,4 +1,3 @@
-
 require_relative '../key.rb'
 require 'giphy'
 require_relative '../lib/program'

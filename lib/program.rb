@@ -31,7 +31,7 @@ class Commands
     when "translate"
       translate
     when "custom"
-      custom
+      Custom.new
     when "exit"
       exit
     else
@@ -176,18 +176,22 @@ class Commands
     frames = num_frames.times.map {|f| "images/frame#{f}.jpg"}
   if answer == "yes"
     frames.cycle.first(num_frames * 2).each do |frame|
-    a = AsciiArt.new(frame)
-    puts a.to_ascii_art(color: true)
+      a = AsciiArt.new(frame)
+      puts "\e[H\e[2J"
+      puts a.to_ascii_art(color: true,
+                          width: 70)
+      sleep 0.03
     end
   elsif answer == "no"
     frames.cycle.first(num_frames * 2).each do |frame|
-    a = AsciiArt.new(frame)
-    puts a.to_ascii_art
+      a = AsciiArt.new(frame)
+      puts a.to_ascii_art
     end
   else
     preview(url)
   end
     delete_frames
+    puts "\e[H\e[2J"
     browser_choice(url)
   end
 
